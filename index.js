@@ -17,8 +17,18 @@
     const courseCollection = client.db("modernEdu").collection("courses");
     const reviewCollection = client.db("modernEdu").collection("reviews");
     const orderCollection = client.db("modernEdu").collection("orders");
+    const adminCollection = client.db("modernEdu").collection("admins");
 
-    console.log('db connected')
+    console.log('db connected');
+
+    app.post('/isAdmin', (req, res) =>{
+      const email = req.body.email;
+      adminCollection.find({email: email})
+      .toArray((err, admin) => {
+          console.log(err);
+          res.send(admin.length > 0 )
+      })
+  })
 
     app.post('/addCourse', (req, res) => {
       const course = req.body;
@@ -26,6 +36,18 @@
       courseCollection.insertOne(course)
         .then(result => {
           console.log(result.insertedCount);
+        })
+    })
+
+    app.post('/addAdmin', (req, res) => {
+      const admin = req.body;
+
+      console.log(admin);
+
+      adminCollection.insertOne(admin)
+        .then(result => {
+          res.send(result.insertedCount > 0);
+          console.log(result.insertedCount > 0);
         })
     })
 
@@ -57,6 +79,13 @@
 
     app.get('/reviews', (req, res) => {
       reviewCollection.find({})
+      .toArray((err, documents) => {
+        res.send(documents);
+      })
+    })
+
+    app.get('/allOrders', (req, res) => {
+      orderCollection.find({})
       .toArray((err, documents) => {
         res.send(documents);
       })
