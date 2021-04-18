@@ -62,6 +62,14 @@
       })
     })
 
+    app.get('/orderList', (req, res) => {
+      console.log(req.query.email);
+      orderCollection.find({email: req.query.email})
+      .toArray((err, documents) => {
+        res.send(documents);
+      })
+    })
+
     app.get('/courses', (req, res) => {
       courseCollection.find({})
       .toArray((err, documents) => {
